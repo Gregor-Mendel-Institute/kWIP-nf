@@ -1,0 +1,9 @@
+name: kWIP
+channels:
+  - bioconda
+  - conda-forge
+  - defaults
+dependencies:
+  - kwip
+  - conda-forge::r-fields
+  - trim-galore
