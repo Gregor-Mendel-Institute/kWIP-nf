@@ -19,6 +19,7 @@ params.outdir = "./results"
 params.reads = false
 params.pairedEnd = false
 
+params.trim = true
 params.clip_r1 = 0
 params.clip_r2 = 0
 params.three_prime_clip_r1 = 0
@@ -37,6 +38,7 @@ log.info "Working dir           : $workDir"
 log.info "Output dir            : ${params.outdir}"
 log.info "---------------------------------------------------"
 log.info "Paired End            : ${params.pairedEnd}"
+log.info "Trim reads            : ${params.trim}"
 log.info "Trim R1               : ${params.clip_r1}"
 log.info "Trim R2               : ${params.clip_r2}"
 log.info "Trim 3' R1            : ${params.three_prime_clip_r1}"
@@ -54,32 +56,35 @@ Channel
 
 // TODO: check input parameters
 
-process trimGalore {
-	tag "$name"
-	publishDir "${params.outdir}/trimGalore", mode: 'copy'
+if ( !params.trim ){
+	ch_reads.set {ch_trimmed_reads}
+} else {
+	process trimGalore {
+		tag "$name"
+		publishDir "${params.outdir}/trimGalore", mode: 'copy'
 
-	input:
-	set val(name), file(reads) from ch_reads
+		input:
+		set val(name), file(reads) from ch_reads
 
-	output:
-	set val(name), file('*fq.gz') into ch_trimmed_reads
+		output:
+		set val(name), file('*fq.gz') into ch_trimmed_reads
 
-	script:
-	c_r1 = params.clip_r1 > 0 ? "--clip_r1 ${params.clip_r1}" : ''
-	c_r2 = params.clip_r2 > 0 ? "--clip_r2 ${params.clip_r2}" : ''
-	tpc_r1 = params.three_prime_clip_r1 > 0 ? "--three_prime_clip_r1 ${params.three_prime_clip_r1}" : ''
-	tpc_r2 = params.three_prime_clip_r2 > 0 ? "--three_prime_clip_r2 ${params.three_prime_clip_r2}" : ''
-	if( !params.pairedEnd ) {
-		"""
-		trim_galore --fastqc --gzip $c_r1 $tpc_r1 $reads
-		"""
-	} else {
-		"""
-		trim_galore --paired --fastqc --gzip $c_r1 $c_r2 $tpc_r1 $tpc_r2 $reads
-		"""
+		script:
+		c_r1 = params.clip_r1 > 0 ? "--clip_r1 ${params.clip_r1}" : ''
+		c_r2 = params.clip_r2 > 0 ? "--clip_r2 ${params.clip_r2}" : ''
+		tpc_r1 = params.three_prime_clip_r1 > 0 ? "--three_prime_clip_r1 ${params.three_prime_clip_r1}" : ''
+		tpc_r2 = params.three_prime_clip_r2 > 0 ? "--three_prime_clip_r2 ${params.three_prime_clip_r2}" : ''
+		if( !params.pairedEnd ) {
+			"""
+			trim_galore --fastqc --gzip $c_r1 $tpc_r1 $reads
+			"""
+		} else {
+			"""
+			trim_galore --paired --fastqc --gzip $c_r1 $c_r2 $tpc_r1 $tpc_r2 $reads
+			"""
+		}
 	}
 }
-
 
 if( !params.pairedEnd ){
 	ch_trimmed_reads.set {ch_fq_for_khmerHashing}
