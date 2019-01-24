@@ -4,6 +4,6 @@ channels:
   - conda-forge
   - defaults
 dependencies:
-  - kwip
-  - conda-forge::r-fields
-  - trim-galore
+  - kwip=0.2.0
+  - conda-forge::r-fields=9.6
+  - trim-galore=0.5.0
