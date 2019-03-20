@@ -1,7 +1,7 @@
 name: kWIP
 channels:
-  - bioconda
   - conda-forge
+  - bioconda
   - defaults
 dependencies:
   - kwip=0.2.0
