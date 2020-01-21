@@ -3,21 +3,21 @@ A nextflow pipeline to estimate sample (dis)similarity using kWIP
 
 ## Usage
 
-To run on MENDEL:
+To run on CBE:
 
 ```
-module load Nextflow
-module load Miniconda3
+module load nextflow/19.01.0
+module load singularity/3.4.1
 ```
 
 Single end:
 ```
-nextflow run Gregor-Mendel-Institute/kWIP-nf --reads '/path/to/*fastq.gz' -profile mendel,conda
+nextflow run Gregor-Mendel-Institute/kWIP-nf --reads '/path/to/*fastq.gz' -profile cbe
 ```
 
 Paired end:
 ```
-nextflow run Gregor-Mendel-Institute/kWIP-nf --reads --pairedEnd '/path/to/*{1,2}*fastq.gz' -profile mendel,conda
+nextflow run Gregor-Mendel-Institute/kWIP-nf --reads --pairedEnd '/path/to/*{1,2}*fastq.gz' -profile cbe
 ```
 
 
